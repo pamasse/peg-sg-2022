@@ -39,24 +39,58 @@ const classique_10ans = x => {
 }
 
 const range = function(start, stop, step){
-    step = step || 1;
+    console.log(step)
     var arr = [];
-    for (var i=start;i<stop;i+=step){
+    for (var i=start; i<stop; i+=step){
        arr.push(i);
     }
     return arr;
 };
 
-const generate_value = x => {
-    let abondement = 0;
-    for (pourcentage in range(0, 100, 0.1)) {
-        abondement = classique_5ans(participation * (pourcentage/100))
-        abondement += classique_10ans(participation * ((100 - pourcentage)/100))
-        result.append({
-            "5ans": pourcentage,
-            "10ans": 100 - pourcentage,
-            "abondement": abondement
-        })
+const generate_graph = result => {
+    const vlSpec = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        data: {
+            values: result
+        },
+        mark: {"type": "line", "tooltip": true},
+        with: 1000,
+        height: 500,
+        encoding: {
+            x: {field: '5ans', type: 'quantitative', title: "SAINT-GOBAIN RELAIS 2022 5 ANS"},
+            y: {field: 'abondement', type: 'quantitative'}
         }
+    };
+
+    // Embed the visualization in the container with id `vis`
+    vegaEmbed('#vis', vlSpec);
+    return true
 }
 
+const generate_value = (participation) => {
+    let result = []
+    let maxAbondement = 0
+    let a5 = 0
+    let a10 = 0
+    let abondement = 0;
+    participation = parseFloat(participation.replace(/\s/g, '')) 
+    for (let pourcentage of range(0, 100, 0.1)) {
+        abondement = classique_5ans(participation * (pourcentage/100))
+        abondement += classique_10ans(participation * ((100 - pourcentage)/100))
+        result.push({
+            "5ans": participation * (pourcentage/100),
+            "10ans": participation * ((100 - pourcentage)/100),
+            "abondement": abondement
+        })
+
+        if (abondement > maxAbondement) {
+            maxAbondement = Math.round(abondement)
+            a5 = Math.round(participation * (pourcentage/100))
+            a10 = Math.round(participation * ((100 - pourcentage)/100))
+        }
+
+    }
+
+    generate_graph(result)
+    return [true, maxAbondement, a5, a10]
+}
