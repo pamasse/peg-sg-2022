@@ -60,4 +60,3 @@ const generate_value = x => {
         }
 }
 
-console.log(range(0, 100, 0.1))

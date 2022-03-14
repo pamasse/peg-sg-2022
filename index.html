@@ -8,15 +8,52 @@
     <title>PEG</title>
     <meta name="author" content="pierre-aymeric masse">
     <script src="//unpkg.com/alpinejs" defer></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.2"></script>
+
     <script src="./index.js"></script>
+
 </head>
 <body>
-    <div x-data="{ open: false }">
-        <button @click="open = true">Expand</button>
-     
-        <span x-show="open">
-          Content...
-        </span>
-    </div>    
+    <div id="vis"></div>
+
+    <script>
+      // Assign the specification to a local variable vlSpec.
+      var vlSpec = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        data: {
+          values: [
+            {a: 'C', b: 2},
+            {a: 'C', b: 7},
+            {a: 'C', b: 4},
+            {a: 'D', b: 1},
+            {a: 'D', b: 2},
+            {a: 'D', b: 6},
+            {a: 'E', b: 8},
+            {a: 'E', b: 4},
+            {a: 'E', b: 7}
+          ]
+        },
+        mark: 'bar',
+        encoding: {
+          y: {field: 'a', type: 'nominal'},
+          x: {
+            aggregate: 'average',
+            field: 'b',
+            type: 'quantitative',
+            axis: {
+              title: 'Average of b'
+            }
+          }
+        }
+      };
+
+      // Embed the visualization in the container with id `vis`
+      vegaEmbed('#vis', vlSpec);
+    </script>
+    
+
 </body>
 </html>
