@@ -73,6 +73,7 @@ const generate_value = (participation) => {
     let a5 = 0
     let a10 = 0
     let abondement = 0;
+    console.log(participation)
     participation = parseFloat(participation.replace(/\s/g, '')) 
     for (let pourcentage of range(0, 100, 0.1)) {
         abondement = classique_5ans(participation * (pourcentage/100))
